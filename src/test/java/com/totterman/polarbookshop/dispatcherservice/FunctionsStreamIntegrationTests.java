@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
-@Import(TestChannelBinderConfiguration.class)
 public class FunctionsStreamIntegrationTests {
 
     @Autowired

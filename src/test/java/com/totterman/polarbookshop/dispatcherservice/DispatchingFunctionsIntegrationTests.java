@@ -1,5 +1,7 @@
 package com.totterman.polarbookshop.dispatcherservice;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,24 @@ class DispatchingFunctionsIntegrationTests {
 
     @Autowired
     private FunctionCatalog catalog;
+
+    @Test
+    void packOrder() {
+        Function<OrderAcceptedMessage, Long> pack = catalog.lookup(Function.class, "pack");
+        long orderId = 121;
+        assertThat(pack.apply(new OrderAcceptedMessage(orderId))).isEqualTo(orderId);
+    }
+
+    @Test
+    void labelOrder() {
+        Function<Flux<Long>, Flux<OrderDispatchedMessage>> label = catalog.lookup(Function.class, "label");
+        Flux<Long> orderId = Flux.just(121L);
+
+        StepVerifier.create(label.apply(orderId))
+                .expectNextMatches(dispatchedOrder ->
+                        dispatchedOrder.equals(new OrderDispatchedMessage(121L)))
+                .verifyComplete();
+    }
 
     @Test
     void packAndLabelOrder() {
