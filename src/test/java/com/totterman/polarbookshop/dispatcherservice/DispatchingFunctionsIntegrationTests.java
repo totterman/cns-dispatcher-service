@@ -13,7 +13,7 @@ import reactor.test.StepVerifier;
 import java.util.function.Function;
 
 @FunctionalSpringBootTest
-@Disabled
+@Disabled("Only necessary when using the functions alone without bindings")
 class DispatchingFunctionsIntegrationTests {
 
     @Autowired
